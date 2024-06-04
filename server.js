@@ -381,15 +381,6 @@ let posts = [
 let reviews = [
   {
     item: "stickers",
-    name: "Pixel Renaissance Stickers",
-    price: 5.99,
-    artist: "Marshall K.",
-    "preview-desc":
-      "These cute stickers are great to put on water bottles, laptops, and phone cases!",
-    description: [
-      "These cute stickers are great to put on water bottles, laptops, and phone cases! We used vinyl plastic to create waterproof stickers that can endure repeated use.",
-      "These sticker packs come with 30 total stickers (10 large, 10 medium, and 10 small sized stickers).",
-    ],
     reviews: [
       {
         reviewer: "Loren Isles",
@@ -412,15 +403,6 @@ let reviews = [
   },
   {
     item: "mug",
-    name: "Pixel Renaissance Mug",
-    price: 10.99,
-    artist: "Marshall K.",
-    "preview-desc":
-      "This mug is perfect for a hot cup of coffee or cold drinks like iced tea.",
-    description: [
-      "This mug is perfect for a hot cup of coffee or cold drinks like iced tea. We used silcone to create unbreakable and eco-friendly mugs that can endure repeated use.",
-      "Each purchase comes with one mug.",
-    ],
     reviews: [
       {
         reviewer: "Katie Dupree",
@@ -432,15 +414,6 @@ let reviews = [
   },
   {
     item: "pin",
-    name: "Pixel Renaissance Pin",
-    price: 8.99,
-    artist: "Marshall K.",
-    "preview-desc":
-      "This pin is a stylish way to show your support for Pixel Renaissance!",
-    description: [
-      "This pin is a stylish way to show your support for Pixel Renaissance! Each pin is made with durable BPA-free plastic with an embedded design to withstand wear and tear.",
-      "Each purchase comes with one pin.",
-    ],
     reviews: [
       {
         reviewer: "Sasha Vox",
