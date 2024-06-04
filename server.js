@@ -422,7 +422,6 @@ let reviews = [
       "This mug is so durable! I dropped this like 3 times and it didn't break",
     rating: 5,
   },
-
   {
     item: "pin",
     reviewer: "Sasha Vox",
@@ -439,6 +438,16 @@ app.get("/api/posts", (req, res) => {
 app.get("/api/reviews", (req, res) => {
   res.send(reviews);
 });
+
+app.post("/api/reviews", upload.single("img"), (req, res) => {
+  console.log(req.body);
+});
+
+/* const validateReview = (review) => {
+  const schema = Joi.object({
+    _id: Joi.allow("");
+  })
+} */
 
 /* Checks if port is accessed */
 app.listen(3001, () => {
