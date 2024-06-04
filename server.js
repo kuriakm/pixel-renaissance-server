@@ -5,13 +5,13 @@ const express = require("express");
 const cors = require("cors");
 /* Set app to express application */
 const app = express();
-app.use(express.static("public"));
-app.use(cors());
 const Joi = require("joi");
 /* For images */
 const multer = require("multer");
+app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -396,38 +396,38 @@ let posts = [
 
 let reviews = [
   {
-    item: "stickers",
     reviewer: "Loren Isles",
     content: "These worked so well with my phone case!",
     rating: 4.5,
+    item: "stickers",
   },
   {
-    item: "stickers",
     reviewer: "Aubrey Lewis",
     content:
       "The stickers are so pretty! I wished they would come in smaller sizes though.",
     rating: 4.0,
+    item: "stickers",
   },
   {
-    item: "stickers",
     reviewer: "Makayla Brown",
     content:
       "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
     rating: 4.5,
+    item: "stickers",
   },
   {
-    item: "mug",
     reviewer: "Katie Dupree",
     content:
       "This mug is so durable! I dropped this like 3 times and it didn't break",
     rating: 5,
+    item: "mug",
   },
   {
-    item: "pin",
     reviewer: "Sasha Vox",
     content:
       "This pin could be larger, but it works with my lanyard so it's not too bad",
     rating: 4,
+    item: "pin",
   },
 ];
 
@@ -441,13 +441,36 @@ app.get("/api/reviews", (req, res) => {
 
 app.post("/api/reviews", upload.single("img"), (req, res) => {
   console.log(req.body);
+  const result = validateReview(req.body);
+  console.log("before");
+
+  if (result.error) {
+    console.log("invalid");
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  console.log("valid");
+  const review = {
+    reviewer: req.body.reviewer,
+    content: req.body.content,
+    rating: req.body.rating,
+  };
+
+  res.send(review);
 });
 
-/* const validateReview = (review) => {
+const validateReview = (review) => {
   const schema = Joi.object({
-    _id: Joi.allow("");
-  })
-} */
+    _id: Joi.allow(""),
+    reviewer: Joi.string().min(3).required(),
+    content: Joi.string().min(3).required(),
+    rating: Joi.number().required(),
+    item: Joi.string().required(),
+  });
+
+  return schema.validate(review);
+};
 
 /* Checks if port is accessed */
 app.listen(3001, () => {
