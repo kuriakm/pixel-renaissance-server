@@ -7,6 +7,22 @@ const cors = require("cors");
 const app = express();
 app.use(express.static("public"));
 app.use(cors());
+const Joi = require("joi");
+/* For images */
+const multer = require("multer");
+app.use("/uploads", express.static("uploads"));
+app.use(express.json());
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/images/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 /* When you go to default "/", execute function */
 /* HTTP request and HTTP response */
@@ -381,47 +397,38 @@ let posts = [
 let reviews = [
   {
     item: "stickers",
-    reviews: [
-      {
-        reviewer: "Loren Isles",
-        content: "These worked so well with my phone case!",
-        rating: 4.5,
-      },
-      {
-        reviewer: "Aubrey Lewis",
-        content:
-          "The stickers are so pretty! I wished they would come in smaller sizes though.",
-        rating: 4.0,
-      },
-      {
-        reviewer: "Makayla Brown",
-        content:
-          "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
-        rating: 4.5,
-      },
-    ],
+    reviewer: "Loren Isles",
+    content: "These worked so well with my phone case!",
+    rating: 4.5,
+  },
+  {
+    item: "stickers",
+    reviewer: "Aubrey Lewis",
+    content:
+      "The stickers are so pretty! I wished they would come in smaller sizes though.",
+    rating: 4.0,
+  },
+  {
+    item: "stickers",
+    reviewer: "Makayla Brown",
+    content:
+      "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
+    rating: 4.5,
   },
   {
     item: "mug",
-    reviews: [
-      {
-        reviewer: "Katie Dupree",
-        content:
-          "This mug is so durable! I dropped this like 3 times and it didn't break",
-        rating: 5,
-      },
-    ],
+    reviewer: "Katie Dupree",
+    content:
+      "This mug is so durable! I dropped this like 3 times and it didn't break",
+    rating: 5,
   },
+
   {
     item: "pin",
-    reviews: [
-      {
-        reviewer: "Sasha Vox",
-        content:
-          "This pin could be larger, but it works with my lanyard so it's not too bad",
-        rating: 4,
-      },
-    ],
+    reviewer: "Sasha Vox",
+    content:
+      "This pin could be larger, but it works with my lanyard so it's not too bad",
+    rating: 4,
   },
 ];
 
