@@ -378,8 +378,86 @@ let posts = [
   },
 ];
 
+let reviews = [
+  {
+    item: "stickers",
+    name: "Pixel Renaissance Stickers",
+    price: 5.99,
+    artist: "Marshall K.",
+    "preview-desc":
+      "These cute stickers are great to put on water bottles, laptops, and phone cases!",
+    description: [
+      "These cute stickers are great to put on water bottles, laptops, and phone cases! We used vinyl plastic to create waterproof stickers that can endure repeated use.",
+      "These sticker packs come with 30 total stickers (10 large, 10 medium, and 10 small sized stickers).",
+    ],
+    reviews: [
+      {
+        reviewer: "Loren Isles",
+        content: "These worked so well with my phone case!",
+        rating: 4.5,
+      },
+      {
+        reviewer: "Aubrey Lewis",
+        content:
+          "The stickers are so pretty! I wished they would come in smaller sizes though.",
+        rating: 4.0,
+      },
+      {
+        reviewer: "Makayla Brown",
+        content:
+          "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
+        rating: 4.5,
+      },
+    ],
+  },
+  {
+    item: "mug",
+    name: "Pixel Renaissance Mug",
+    price: 10.99,
+    artist: "Marshall K.",
+    "preview-desc":
+      "This mug is perfect for a hot cup of coffee or cold drinks like iced tea.",
+    description: [
+      "This mug is perfect for a hot cup of coffee or cold drinks like iced tea. We used silcone to create unbreakable and eco-friendly mugs that can endure repeated use.",
+      "Each purchase comes with one mug.",
+    ],
+    reviews: [
+      {
+        reviewer: "Katie Dupree",
+        content:
+          "This mug is so durable! I dropped this like 3 times and it didn't break",
+        rating: 5,
+      },
+    ],
+  },
+  {
+    item: "pin",
+    name: "Pixel Renaissance Pin",
+    price: 8.99,
+    artist: "Marshall K.",
+    "preview-desc":
+      "This pin is a stylish way to show your support for Pixel Renaissance!",
+    description: [
+      "This pin is a stylish way to show your support for Pixel Renaissance! Each pin is made with durable BPA-free plastic with an embedded design to withstand wear and tear.",
+      "Each purchase comes with one pin.",
+    ],
+    reviews: [
+      {
+        reviewer: "Sasha Vox",
+        content:
+          "This pin could be larger, but it works with my lanyard so it's not too bad",
+        rating: 4,
+      },
+    ],
+  },
+];
+
 app.get("/api/posts", (req, res) => {
   res.send(posts);
+});
+
+app.get("/api/reviews", (req, res) => {
+  res.send(reviews);
 });
 
 /* Checks if port is accessed */
