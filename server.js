@@ -408,7 +408,7 @@ let reviews = [
     reviewer: "Loren Isles",
     content: "These worked so well with my phone case!",
     rating: 4.5,
-    item: "stickers",
+    item: "Pixel Renaissance Stickers",
   },
   {
     _id: 1,
@@ -416,7 +416,7 @@ let reviews = [
     content:
       "The stickers are so pretty! I wished they would come in smaller sizes though.",
     rating: 4.0,
-    item: "stickers",
+    item: "Pixel Renaissance Stickers",
   },
   {
     _id: 2,
@@ -424,7 +424,7 @@ let reviews = [
     content:
       "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
     rating: 4.5,
-    item: "stickers",
+    item: "Pixel Renaissance Stickers",
   },
   {
     _id: 3,
@@ -432,7 +432,7 @@ let reviews = [
     content:
       "This mug is so durable! I dropped this like 3 times and it didn't break",
     rating: 5,
-    item: "mug",
+    item: "Pixel Renaissance Mug",
   },
   {
     _id: 4,
@@ -440,7 +440,7 @@ let reviews = [
     content:
       "This pin could be larger, but it works with my lanyard so it's not too bad",
     rating: 4,
-    item: "pin",
+    item: "Pixel Renaissance Pin",
   },
 ];
 
@@ -480,9 +480,7 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
 
 app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
   let review = reviews.find((h) => h._id === parseInt(req.params.id));
-  console.log(req.params.id);
   if (!review) res.status(400).send("Review with given id was not found");
-  console.log(review);
 
   const result = validateReview(req.body);
 
@@ -500,6 +498,16 @@ app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
     review.image = "images/" + req.file.filename;
   }
 
+  res.send(review);
+});
+
+app.delete("/api/reviews/:id", (req, res) => {
+  let review = reviews.find((h) => h._id === parseInt(req.params.id));
+  if (!review) res.status(400).send("Review with given id was not found");
+
+  const index = reviews.indexOf(review);
+  reviews.splice(index, 1);
+  console.log(reviews);
   res.send(review);
 });
 
