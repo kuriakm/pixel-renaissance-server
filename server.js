@@ -32,6 +32,7 @@ app.get("/", (req, res) => {
 
 let posts = [
   {
+    _id: 0,
     game: ["Buckshot Roulette"],
     headline: "The Devastating Reality of Gambling Addiction",
     lede: "How a simple horror game beautifully depicts the painful journey of falling too deep into a gambling addiction.",
@@ -102,6 +103,7 @@ let posts = [
     tags: ["analysis", "gameplay"],
   },
   {
+    _id: 1,
     game: ["Stardew Valley", "Harvest Moon"],
     headline: "Two Farming Games, Two Very Different Experiences",
     lede: "How Stardew Valley's pixel art creates a unique gaming experience compared to its counterparts.",
@@ -156,6 +158,7 @@ let posts = [
     tags: ["analysis", "art style", "throwback"],
   },
   {
+    _id: 2,
     game: ["Portal"],
     headline: "Finding Freedom in the Face of Oppression",
     lede: "How Portal's art style and game mechanics captures the struggle between humanity and the relentless forces that seek to constrain it.",
@@ -194,6 +197,7 @@ let posts = [
     tags: ["analysis", "art style", "gameplay"],
   },
   {
+    _id: 3,
     game: ["Brave Fencer Musashi"],
     headline: "A Game that Does Not Get the Love it Deserves",
     lede: "Brave Fencer Musashi (1998) does not get the recognition it deserves and I am here to fix that.",
@@ -232,6 +236,7 @@ let posts = [
     tags: ["analysis", "gameplay", "throwback"],
   },
   {
+    _id: 4,
     game: ["Minecraft"],
     headline: "How Adding More Features Can Make a Game Less Fun",
     lede: 'Minecraft (2011) has been inundated with new features to "improve" the gaming experience, but why does it not feel like an improvement?',
@@ -270,6 +275,7 @@ let posts = [
     tags: ["analysis", "art style", "gameplay"],
   },
   {
+    _id: 5,
     game: ["Delicious"],
     headline:
       "Exploring Toxic Mother-Daughter Relationships in a Seemingly Wholesome Game Series",
@@ -309,6 +315,7 @@ let posts = [
     tags: ["analysis", "gameplay", "throwback"],
   },
   {
+    _id: 6,
     game: ["NieR: Automata"],
     headline:
       "flower for m[A]chines and What it Means to Be Worthy of Humanity",
@@ -355,6 +362,7 @@ let posts = [
     tags: ["analysis", "gameplay"],
   },
   {
+    _id: 7,
     game: ["Halo 3"],
     headline: "The Perfect End to the Halo Series",
     lede: "Halo 3 (2007) should have been the end of the Halo series and I will explain why.",
@@ -396,12 +404,14 @@ let posts = [
 
 let reviews = [
   {
+    _id: 0,
     reviewer: "Loren Isles",
     content: "These worked so well with my phone case!",
     rating: 4.5,
     item: "stickers",
   },
   {
+    _id: 1,
     reviewer: "Aubrey Lewis",
     content:
       "The stickers are so pretty! I wished they would come in smaller sizes though.",
@@ -409,6 +419,7 @@ let reviews = [
     item: "stickers",
   },
   {
+    _id: 2,
     reviewer: "Makayla Brown",
     content:
       "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
@@ -416,6 +427,7 @@ let reviews = [
     item: "stickers",
   },
   {
+    _id: 3,
     reviewer: "Katie Dupree",
     content:
       "This mug is so durable! I dropped this like 3 times and it didn't break",
@@ -423,6 +435,7 @@ let reviews = [
     item: "mug",
   },
   {
+    _id: 4,
     reviewer: "Sasha Vox",
     content:
       "This pin could be larger, but it works with my lanyard so it's not too bad",
@@ -442,7 +455,6 @@ app.get("/api/reviews", (req, res) => {
 app.post("/api/reviews", upload.single("img"), (req, res) => {
   console.log(req.body);
   const result = validateReview(req.body);
-  console.log("before");
 
   if (result.error) {
     console.log("invalid");
@@ -450,12 +462,43 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
     return;
   }
 
-  console.log("valid");
   const review = {
+    _id: reviews.length,
     reviewer: req.body.reviewer,
     content: req.body.content,
     rating: req.body.rating,
+    item: req.body.item,
   };
+
+  if (req.file) {
+    review.image = "images/" + req.file.filename;
+  }
+
+  reviews.push(review);
+  res.status(200).send(review);
+});
+
+app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
+  let review = reviews.find((h) => h._id === parseInt(req.params.id));
+  console.log(req.params.id);
+  if (!review) res.status(400).send("Review with given id was not found");
+  console.log(review);
+
+  const result = validateReview(req.body);
+
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  review.reviewer = req.body.reviewer;
+  review.content = req.body.content;
+  review.rating = req.body.rating;
+  review.item = req.body.item;
+
+  if (req.file) {
+    review.image = "images/" + req.file.filename;
+  }
 
   res.send(review);
 });
