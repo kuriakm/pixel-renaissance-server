@@ -466,7 +466,7 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
     _id: reviews.length,
     reviewer: req.body.reviewer,
     content: req.body.content,
-    rating: req.body.rating,
+    rating: parseFloat(req.body.rating),
     item: req.body.item,
   };
 
@@ -491,7 +491,7 @@ app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
 
   review.reviewer = req.body.reviewer;
   review.content = req.body.content;
-  review.rating = req.body.rating;
+  review.rating = parseFloat(req.body.rating);
   review.item = req.body.item;
 
   if (req.file) {
