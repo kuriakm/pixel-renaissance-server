@@ -422,7 +422,7 @@ let reviews = [
     _id: 2,
     reviewer: "Makayla Brown",
     content:
-      "I really liked these stickers, but I think it would be better with more designs rather than just the logo. ",
+      "I really liked these stickers, but I think it would be better with more designs rather than just the logo.",
     rating: 4.5,
     item: "Pixel Renaissance Stickers",
   },
