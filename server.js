@@ -1,3 +1,5 @@
+/* TODO: Add MongoDB implementation back to server.js*/
+
 // Standard setup
 // Require express to start code
 const express = require("express");
