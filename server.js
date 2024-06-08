@@ -1,19 +1,27 @@
-/* TODO: Add MongoDB implementation back to server.js*/
-
 // Standard setup
 // Require express to start code
 const express = require("express");
 // Require cors to start code
 const cors = require("cors");
-/* Set app to express application */
+// Set app to express application
 const app = express();
 const Joi = require("joi");
-/* For images */
+// For images
 const multer = require("multer");
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(cors());
+const mongoose = require("mongoose");
+// Access .env credentials
+require("dotenv").config();
+
+// Set .env credentials to consts
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
+const cluster = process.env.CLUSTER;
+const cLink = process.env.CLUSTER_LINK;
+const db = process.env.DB;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -26,12 +34,30 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-/* When you go to default "/", execute function */
-/* HTTP request and HTTP response */
+// mongodb+srv://<username>:<pw>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority&appName=<cluster>
+mongoose
+  .connect(
+    `mongodb+srv://${username}:${password}@${cLink}.mongodb.net/${db}?retryWrites=true&w=majority&appName=${cluster}`
+  )
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.log("Error connecting to MongoDB", error));
+
+const reviewSchema = new mongoose.Schema({
+  reviewer: String,
+  content: String,
+  rating: Number,
+  item: String,
+});
+
+const Review = mongoose.model("Review", reviewSchema);
+
+// When you go to default "/", execute function
+// HTTP request and HTTP response
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+// Posts are hardcoded into server due to lack of CRUD operations
 let posts = [
   {
     _id: 0,
@@ -404,55 +430,27 @@ let posts = [
   },
 ];
 
-let reviews = [
-  {
-    _id: 0,
-    reviewer: "Loren Isles",
-    content: "These worked so well with my phone case!",
-    rating: 4.5,
-    item: "Pixel Renaissance Stickers",
-  },
-  {
-    _id: 1,
-    reviewer: "Makayla Brown",
-    content:
-      "I really liked these stickers, but I think it would be better with more designs rather than just the logo.",
-    rating: 4.5,
-    item: "Pixel Renaissance Stickers",
-  },
-  {
-    _id: 2,
-    reviewer: "Aubrey Lewis",
-    content:
-      "The stickers are so pretty! I wished they would come in smaller sizes though.",
-    rating: 4.0,
-    item: "Pixel Renaissance Stickers",
-  },
-  {
-    _id: 3,
-    reviewer: "Katie Dupree",
-    content:
-      "This mug is so durable! I dropped this like 3 times and it didn't break",
-    rating: 5,
-    item: "Pixel Renaissance Mug",
-  },
-  {
-    _id: 4,
-    reviewer: "Sasha Vox",
-    content:
-      "This pin could be larger, but it works with my lanyard so it's not too bad",
-    rating: 4,
-    item: "Pixel Renaissance Pin",
-  },
-];
-
 app.get("/api/posts", (req, res) => {
   res.send(posts);
 });
 
 app.get("/api/reviews", (req, res) => {
-  res.send(reviews);
+  getReviews(res);
 });
+
+const getReviews = async (res) => {
+  const reviews = await Review.find();
+  res.send(reviews);
+};
+
+app.get("/app/reviews/:id", (req, res) => {
+  getReview(res, req.params.id);
+});
+
+const getReview = async (res, id) => {
+  const review = Review.findOne({ _id: id });
+  res.send(review);
+};
 
 app.post("/api/reviews", upload.single("img"), (req, res) => {
   console.log(req.body);
@@ -464,44 +462,52 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
     return;
   }
 
-  const review = {
-    _id: reviews.length,
+  const review = new Review({
     reviewer: req.body.reviewer,
     content: req.body.content,
     rating: parseFloat(req.body.rating),
     item: req.body.item,
-  };
+  });
 
   if (req.file) {
     review.image = "images/" + req.file.filename;
   }
 
-  reviews.push(review);
-  res.status(200).send(review);
+  createReview(res, review);
 });
 
+const createReview = async (res, review) => {
+  const result = await review.save();
+  res.send(review);
+};
+
 app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
-  let review = reviews.find((h) => h._id === parseInt(req.params.id));
-  if (!review) res.status(400).send("Review with given id was not found");
-
   const result = validateReview(req.body);
-
+  console.log(result);
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
     return;
   }
 
-  review.reviewer = req.body.reviewer;
-  review.content = req.body.content;
-  review.rating = parseFloat(req.body.rating);
-  review.item = req.body.item;
+  updateReview(req, res);
+});
+
+const updateReview = async (req, res) => {
+  let fieldsToUpdate = {
+    reviewer: req.body.reviewer,
+    content: req.body.content,
+    rating: req.body.rating,
+    item: req.body.item,
+  };
 
   if (req.file) {
-    review.image = "images/" + req.file.filename;
+    fieldsToUpdate.img = "images/" + req.file.filename;
   }
 
-  res.send(review);
-});
+  const result = await Review.updateOne({ _id: req.params.id }, fieldsToUpdate);
+  console.log(result);
+  res.send(result);
+};
 
 app.delete("/api/reviews/:id", (req, res) => {
   let review = reviews.find((h) => h._id === parseInt(req.params.id));
