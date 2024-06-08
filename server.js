@@ -510,7 +510,7 @@ app.delete("/api/reviews/:id", (req, res) => {
 
 const removeReviews = async (res, id) => {
   const review = await Review.findByIdAndDelete(id);
-  res.sent(review);
+  res.send(review);
 };
 
 const validateReview = (review) => {
