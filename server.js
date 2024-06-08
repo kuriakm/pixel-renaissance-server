@@ -500,9 +500,9 @@ const updateReview = async (req, res) => {
     item: req.body.item,
   };
 
-  if (req.file) {
+  /*  if (req.file) {
     fieldsToUpdate.img = "images/" + req.file.filename;
-  }
+  } */
 
   const result = await Review.updateOne({ _id: req.params.id }, fieldsToUpdate);
   console.log(result);
