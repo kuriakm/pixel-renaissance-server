@@ -500,24 +500,18 @@ const updateReview = async (req, res) => {
     item: req.body.item,
   };
 
-  /*  if (req.file) {
-    fieldsToUpdate.img = "images/" + req.file.filename;
-  } */
-
   const result = await Review.updateOne({ _id: req.params.id }, fieldsToUpdate);
-  console.log(result);
   res.send(result);
 };
 
 app.delete("/api/reviews/:id", (req, res) => {
-  let review = reviews.find((h) => h._id === parseInt(req.params.id));
-  if (!review) res.status(400).send("Review with given id was not found");
-
-  const index = reviews.indexOf(review);
-  reviews.splice(index, 1);
-  console.log(reviews);
-  res.send(review);
+  removeReviews(res, req.params.id);
 });
+
+const removeReviews = async (res, id) => {
+  const review = await Review.findByIdAndDelete(id);
+  res.sent(review);
+};
 
 const validateReview = (review) => {
   const schema = Joi.object({
