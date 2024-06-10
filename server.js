@@ -468,7 +468,7 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
   });
 
   if (req.file) {
-    review.image = "images/" + req.file.filename;
+    review.image = "images/reviews" + req.file.filename;
   }
 
   createReview(res, review);
@@ -494,7 +494,7 @@ app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   };
 
   if (req.file) {
-    fieldsToUpdate.img = "images/" + req.file.filename;
+    fieldsToUpdate.img = "images/reviews" + req.file.filename;
   }
 
   const wentThrough = await Review.updateOne(
