@@ -47,6 +47,7 @@ const reviewSchema = new mongoose.Schema({
   content: String,
   rating: Number,
   item: String,
+  image: String,
 });
 
 const Review = mongoose.model("Review", reviewSchema);
@@ -468,7 +469,7 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
   });
 
   if (req.file) {
-    review.image = "images/reviews" + req.file.filename;
+    review.image = "images/reviews/" + req.file.filename;
   }
 
   createReview(res, review);
@@ -494,7 +495,7 @@ app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   };
 
   if (req.file) {
-    fieldsToUpdate.img = "images/reviews" + req.file.filename;
+    fieldsToUpdate.image = "images/reviews/" + req.file.filename;
   }
 
   const wentThrough = await Review.updateOne(
