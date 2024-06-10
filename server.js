@@ -481,7 +481,7 @@ const createReview = async (res, review) => {
   res.send(review);
 };
 
-app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
+app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   const result = validateReview(req.body);
   console.log(result);
   if (result.error) {
@@ -489,10 +489,6 @@ app.put("/api/reviews/:id", upload.single("img"), (req, res) => {
     return;
   }
 
-  updateReview(req, res);
-});
-
-const updateReview = async (req, res) => {
   let fieldsToUpdate = {
     reviewer: req.body.reviewer,
     content: req.body.content,
@@ -500,9 +496,18 @@ const updateReview = async (req, res) => {
     item: req.body.item,
   };
 
-  const result = await Review.updateOne({ _id: req.params.id }, fieldsToUpdate);
-  res.send(result);
-};
+  if (req.file) {
+    fieldsToUpdate.img = "images/" + req.file.filename;
+  }
+
+  const wentThrough = await Review.updateOne(
+    { _id: req.params.id },
+    fieldsToUpdate
+  );
+
+  const updatedReview = await Review.findOne({ _id: req.params.id });
+  res.send(updatedReview);
+});
 
 app.delete("/api/reviews/:id", (req, res) => {
   removeReviews(res, req.params.id);
