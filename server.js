@@ -453,11 +453,9 @@ const getReview = async (res, id) => {
 };
 
 app.post("/api/reviews", upload.single("img"), (req, res) => {
-  console.log(req.body);
   const result = validateReview(req.body);
 
   if (result.error) {
-    console.log("invalid");
     res.status(400).send(result.error.details[0].message);
     return;
   }
@@ -483,7 +481,6 @@ const createReview = async (res, review) => {
 
 app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   const result = validateReview(req.body);
-  console.log(result);
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
     return;
