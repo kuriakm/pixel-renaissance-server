@@ -25,7 +25,7 @@ const db = process.env.DB;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./public/images/");
+    cb(null, "./public/images/reviews/");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -435,25 +435,17 @@ app.get("/api/posts", (req, res) => {
   res.send(posts);
 });
 
-app.get("/api/reviews", (req, res) => {
-  getReviews(res);
-});
-
-const getReviews = async (res) => {
+app.get("/api/reviews", async (req, res) => {
   const reviews = await Review.find();
   res.send(reviews);
-};
-
-app.get("/app/reviews/:id", (req, res) => {
-  getReview(res, req.params.id);
 });
 
-const getReview = async (res, id) => {
+app.get("/app/reviews/:id", async (req, res) => {
   const review = Review.findOne({ _id: id });
   res.send(review);
-};
+});
 
-app.post("/api/reviews", upload.single("img"), (req, res) => {
+app.post("/api/reviews", upload.single("image"), async (req, res) => {
   const result = validateReview(req.body);
 
   if (result.error) {
@@ -469,19 +461,16 @@ app.post("/api/reviews", upload.single("img"), (req, res) => {
   });
 
   if (req.file) {
-    review.image = "images/" + req.file.filename;
+    review.image = "images/reviews/" + req.file.filename;
   }
 
-  createReview(res, review);
+  const newReview = await review.save();
+  res.send(newReview);
 });
 
-const createReview = async (res, review) => {
-  const result = await review.save();
-  res.send(review);
-};
-
-app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
+app.put("/api/reviews/:id", upload.single("image"), async (req, res) => {
   const result = validateReview(req.body);
+
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
     return;
@@ -495,7 +484,7 @@ app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   };
 
   if (req.file) {
-    fieldsToUpdate.image = "images/" + req.file.filename;
+    fieldsToUpdate.image = "images/reviews/" + req.file.filename;
   }
 
   const wentThrough = await Review.updateOne(
@@ -507,14 +496,10 @@ app.put("/api/reviews/:id", upload.single("img"), async (req, res) => {
   res.send(updatedReview);
 });
 
-app.delete("/api/reviews/:id", (req, res) => {
-  removeReviews(res, req.params.id);
-});
-
-const removeReviews = async (res, id) => {
-  const review = await Review.findByIdAndDelete(id);
+app.delete("/api/reviews/:id", async (req, res) => {
+  const review = await Review.findByIdAndDelete(req.params.id);
   res.send(review);
-};
+});
 
 const validateReview = (review) => {
   const schema = Joi.object({
